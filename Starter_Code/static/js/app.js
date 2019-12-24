@@ -1,4 +1,4 @@
-// Create metadata function for 
+// Create metadata Function For Demographic Info
 function metadata(sample) {
     d3.json("samples.json").then((data) => {
         var metadata = data.metadata;
@@ -15,47 +15,40 @@ function metadata(sample) {
 }
 
 
-
-// // Create a trace object with the data 
-// function otu(sample) {
-//     d3.json('samples.json').then((Data) => {
-//         // Create Data Variable
-//         var data = Data.samples;
-//         var sample_values = data[0].sample_values.slice(0,10);
-//         var otu_ids = data[0].otu_ids.slice(0,10)
-//         // Sort Data
-//         console.log(data[0].sample_values.slice(0,10), data[0].otu_ids.slice(0,10));
-//         var data = [
-//             {
-//             type: "bar",  
-//             x: sample_values,
-//             y: otu_ids,
-//             orientation:'h'
-//             }
-//         ];
-//         Plotly.newPlot('bar', data);
-//         });
-// }
-
-
 // Create a trace object with the data 
 function otu(sample) {
+
+    // Read In File 
     d3.json('samples.json').then((Data) => {
         
         // Create Data Variable'
         var data = Data.samples;
+
+        // Display to Console to Verify
         console.log(data)
+
+        // Filter to Enter Array
         var sample_array = data.filter(i => i.id === sample);
+
+        // Display to Console to Verify
         console.log(sample_array[0]);
+
+        // Create otu_ids Variable
         var otu_ids = sample_array[0].otu_ids;
+
+        // Display to Console to Verify
         console.log(otu_ids);
+
+        // Create Labels Variable
         var otu_lables = sample_array[0].otu_labels;
+
+        // Create sample_values Variable
         var sample_values = sample_array[0].sample_values;
 
+        // Create Ticks
+        var yticks = otu_ids.slice(0, 10).map(otu => `OTU ${otu}`).reverse();
 
-
-        // Draws Bar Chart
-        var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
+        // Create Data for Bar Chart
         var trace = [
             {
             type: "bar",  
@@ -65,6 +58,8 @@ function otu(sample) {
             text: otu_lables.slice(0,10).reverse(),
             }
         ];
+
+        // Create Layout for Bar Chart
         var barLayout = {
             title: "Top 10 Bacteria Cultures Found",
             margin: {
@@ -73,11 +68,10 @@ function otu(sample) {
             }
         };
 
+        // Draws Bar Chart
         Plotly.newPlot('bar', trace, barLayout);
 
-        });
-
-        // Draws Bubble Chart
+        // Creates layout for Bubble Chart
         var bubbleLayout = {
             title: "Bacteria Cultures Per Sample",
             margin: {
@@ -92,10 +86,12 @@ function otu(sample) {
             }
             
         };
+
+        // Creates Data For Bubble Chart 
         var bubbleData = [{
             x: otu_ids,
             y: sample_values,
-            text: otu_labels,
+            text: otu_lables,
             mode: "markers",
             marker: {
               size: sample_values,
@@ -103,33 +99,43 @@ function otu(sample) {
               colorscale: "Earth"
             }
           }];
-          // Draws Bubble
+
+          // Draws Bubble Chart
           Plotly.newPlot("bubble", bubbleData, bubbleLayout);
 
+        });
 };
 
 
-
-
-
+// Create init Function
 function init() {
-    // Reference to dropdown select element 
+
+// Reference to dropdown select element 
 var selector = d3.select('#selDataset');
+
 // Read in file
 d3.json("samples.json").then(function(data) {
-// Create variables for data
-var names = data.names
 
-names.forEach((sample) => {
+// Create variables for data
+var ids = data.names
+
+// Create Change Loop
+ids.forEach((sample) => {
     selector
     .append("option")
     .text(sample)
     .property("value", sample);
 });
 
-var initial_sample = names[0];
+// Create Variable Instance For Change loop
+var initial_sample = ids[0];
+
+// Call metadata Function
 metadata(initial_sample);
+
+// Call otu function
 otu(initial_sample);
+
 });
 }
 
@@ -137,6 +143,10 @@ init();
 
 // Fetch new data each time a new sample is selected
 function optionChanged(newSample) {
+
+    // Display metadata Fucntion and Change
     metadata(newSample);
+
+    // Display otu Function and Change 
     otu(newSample);
 }
