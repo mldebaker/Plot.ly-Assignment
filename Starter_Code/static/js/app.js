@@ -123,37 +123,39 @@ function guage(sample) {
         
         // Log to Console to Inspect
         console.log(wfreq)
-        
+
         // Create Trace for Guage
         var traceGuage = [
           {
             type: "indicator",
             mode: "gauge+number+delta",
             value: wfreq,
-            title: { text: "Scrubs Per Week", font: { size: 24 } },
-          //   delta: { reference: 400, increasing: { color: "RebeccaPurple" } },
+            title: { text: "Belly Button Scrubs Per Week", font: { size: 24 }, },
             gauge: {
-              axis: { range: [null, 10], tickwidth: 1, tickcolor: "darkblue" },
-              bar: { color: "RebeccaPurple" },
+              steps: [
+                { range: [0, 1], color: "PaleGoldenRod"},
+                { range: [1, 2], color: "Khaki"},
+                { range: [2, 4], color: "Yellow"},
+                { range: [4, 8], color: "YellowGreen"},
+                { range: [8,10], color: "lime"},
+                // { range: [7,8], color: "Green"}
+              ],
+              axis: { range: [null, 10], tickwidth: 1, tickcolor: "black" },
+              bar: { color: "SlateGray" },
               bgcolor: "white",
               borderwidth: 2,
-              bordercolor: "RebeccaPurple",
-              steps: [
-                { range: [0, 10], color: "cyan" },
-              
-              ],
-
+              bordercolor: "black",
               }
             }
 
         ];
         
       var layout = {
-          width: 500,
+          width: 450,
           height: 400,
           margin: { t: 25, r: 25, l: 25, b: 25 },
           paper_bgcolor: "lavender",
-          font: { color: "darkblue", family: "Arial" }
+          font: { color: "black", family: "Arial" }
         };
         
       Plotly.newPlot('gauge', traceGuage, layout)
